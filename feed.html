@@ -1,0 +1,94 @@
+
+<html>
+<head>
+	<title>InstaO</title>
+	
+	<meta property="og:image" content="http://distilleryimage10.instagram.com/88b0329e933e11e19dc71231380fe523_7.jpg" />
+	
+	<script src="http://dev.dailyemerald.com:8100/socket.io/socket.io.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="http://dev.dailyemerald.com:8100/jquery.lazyload.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/ICanHaz.js/0.9/ICanHaz.min.js"></script>
+	
+	<script id="photo" type="text/html">
+	      <li>
+	        <a href="{{ permalink }}" target="_blank">
+				<img src="{{ src }}"></img>
+			</a><br>
+			<span class="caption">{{ caption }}</span><br>
+			Posted: {{ datestring }}<br> 
+			<!--By: <a href="{{ permalink }}">{{ username }}</a>-->
+	      </li>
+	</script>
+	
+	
+	<script type="text/javascript">
+	
+	function buildEntry(item) { // get a json object, does somt stuff, returns html ready to be inserted
+		var datestring = new Date(parseInt(item.created_time)*1000).toLocaleString();
+		var caption  = "";
+		if (item.caption && item.caption.text) {
+			caption = '"'+ item.caption.text +'"';
+		}
+		//console.log(datestring)
+		var photo_data = {
+			src: item.images.low_resolution.url, //item.images.standard_resolution.url,
+			caption: caption,
+			datestring: datestring,
+			permalink: item.link,
+			username: item.user.full_name
+		}
+		return ich.photo(photo_data);
+	}
+	
+	$(document).ready(function() {
+
+	});
+	
+	var socket = io.connect('http://dev.dailyemerald.com:8100');
+	socket.on('hello', function (data) {
+		//console.log(data);
+	    //socket.emit('my other event', { my: 'data' });
+	});
+	socket.on('fullset', function(fullset) {
+		var fullset = JSON.parse(fullset);
+		window.fullset = fullset;
+ 		console.log(fullset);
+		var ids = fullset.ids;
+		var photos = fullset.photos;
+		//console.log('socket got fullset', ids, photos)
+		
+		$("#loadingtext").empty();
+		
+		ids.forEach(function(id) {
+			//console.log(id, photos[id]);
+			var item = photos[id];
+			$("#photos").append(buildEntry(item));
+		});
+
+		$("img").lazyload({
+			threshold: 0
+		});
+
+	});
+	socket.on('new_photo', function(item) {
+		var item = JSON.parse(item);
+		//console.log(item);
+		$("#photos").prepend( buildEntry(item) );
+		
+		
+	});
+	
+	</script>
+	<link rel="stylesheet" type="text/css" href="style.css"></link>
+</head>
+
+<body>
+	<div id="wrapper">
+		<h2 id="loadingtext">Loading... but if this doesn't go away promptly, it's probably broken</h2>
+		<ul id="photos" />
+	</div>
+</body>
+
+
+</html>

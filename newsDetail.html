@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dev.css">
+  <title>Oregon Football | The Emerald</title>
+</head>
+
+<body class="article">
+	<div id="wrapper">
+		<div class="main">
+			Loading...
+		</div> <!-- .content -->			
+	</div> <!-- #wrapper -->
+</body>	
+
+  <script type="text/x-handlebars-template" id="storyDetail-tpl">
+	<h2 class="title">{{title}}</h2>
+	<div class="meta">
+		<ul>
+			<li class="date">{{date}}</li>
+			<li class="byline">{{author}}</li>
+		</ul>
+	</div>
+	<div class="article-img">
+		<img src="{{thumbnail}}" alt="" />
+	</div>
+	<div class="content">
+		{{{content}}}
+	</div>
+  </script>
+
+  <script type="text/javascript" src="js/zepto.min.js"></script>
+  <script type="text/javascript" src="js/handlebars.min.js"></script>
+  <script type="text/javascript">
+
+	var templateSource = $('#storyDetail-tpl').html();
+	var template = Handlebars.compile(templateSource);
+
+	var storyURL = decodeURIComponent(window.location.href.split('=')[1]); //TODO: needs a sanity check here...
+	
+	$.ajax({
+	  url: storyURL+'/json?callback=?',
+	  dataType: 'script',
+	  success: function(data){
+	    data.forEach(function(story){	
+			$(".main").html(template(story));
+		});
+	  }
+	});
+
+  </script>
+</body>
+</html>
