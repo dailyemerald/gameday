@@ -1,15 +1,18 @@
-
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-	<title>InstaO</title>
-	
-	<meta property="og:image" content="http://distilleryimage10.instagram.com/88b0329e933e11e19dc71231380fe523_7.jpg" />
-	
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dev.css">
+
+	<script src="js/libs/modernizr-2.5.3.min.js"></script>
+	<script src="js/libs/zepto.min.js"></script>
+
 	<script src="http://dev.dailyemerald.com:8100/socket.io/socket.io.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script src="http://dev.dailyemerald.com:8100/jquery.lazyload.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/ICanHaz.js/0.9/ICanHaz.min.js"></script>
-	
+
 	<script id="photo" type="text/html">
 	      <li>
 	        <a href="{{ permalink }}" target="_blank">
@@ -80,15 +83,76 @@
 	});
 	
 	</script>
-	<link rel="stylesheet" type="text/css" href="style.css"></link>
+
 </head>
-
-<body>
+</head>
+<body class="fan-feed">
+	
 	<div id="wrapper">
-		<h2 id="loadingtext">Loading... but if this doesn't go away promptly, it's probably broken</h2>
-		<ul id="photos" />
-	</div>
+		
+		<div class="main">
+			<ul class="feed clearfix">				
+					<li class="tweet">
+						<img src="assets/news-thumb.png" class="thumb" />
+						<h2 class="tweet-title">Go Ducks</h2>
+						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
+						<p class="time">3hr</p>
+					</li>
+
+					<li class="tweet">
+						<img src="assets/news-thumb.png" class="thumb" />
+						<h2 class="tweet-title">Go Ducks</h2>
+						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
+						<p class="time">3hr</p>
+					</li>
+
+					<li class="tweet">
+						<img src="assets/news-thumb.png" class="thumb" />
+						<h2 class="tweet-title">Go Ducks</h2>
+						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
+						<p class="time">3hr</p>
+					</li>
+
+					<li class="tweet">
+						<img src="assets/news-thumb.png" class="thumb" />
+						<h2 class="tweet-title">Go Ducks</h2>
+						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
+						<p class="time">3hr</p>
+					</li>
+
+					<li class="tweet">
+						<img src="assets/news-thumb.png" class="thumb" />
+						<h2 class="tweet-title">Go Ducks</h2>
+						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
+						<p class="time">3hr</p>
+					</li>
+
+					<li class="tweet">
+						<img src="assets/news-thumb.png" class="thumb" />
+						<h2 class="tweet-title">Go Ducks</h2>
+						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
+						<p class="time">3hr</p>
+					</li>
+
+					<li class="instagram">
+						<img src="assets/instagram.jpeg" class="insta-img" />
+						<img src="assets/news-thumb.png" class="thumb" />
+						<h2 class="instagram-title">Go Ducks</h2>
+						<a href="" class="instagram-comment">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
+						<p class="time">3hr</p>
+					</li>
+
+					<li class="instagram">
+						<img src="assets/instagram-2.jpeg" class="insta-img" />
+						<img src="assets/news-thumb.png" class="thumb" />
+						<h2 class="instagram-title">Go Ducks</h2>
+						<a href="" class="instagram-comment">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
+						<p class="time">3hr</p>
+					</li>
+
+				</ul>
+		</div> <!-- .main -->	
+	</div> <!-- #wrapper -->
+
 </body>
-
-
 </html>

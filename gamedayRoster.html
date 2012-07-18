@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dev.css">
+  
+  <script type="text/javascript" src="js/zepto.min.js"></script>
+  <script type="text/javascript" src="js/tabletop.js"></script>
+  <script type="text/javascript" src="js/handlebars.min.js"></script>
+  
+  <script type="text/x-handlebars-template" id="tplPlayer">
+  	<li class="heading item">
+		<ul>
+			<li class="number">{{number}}</li>
+			<li class="name">{{name}}</li>
+			<li class="position">{{position}}</li>
+		</ul>
+	</li>
+  </script>
+
+  <script type="text/javascript">
+
+    var buildApp = function(data) {
+		var Ducks = data.Ducks.elements;
+		Ducks.forEach(function(player){
+			//console.log(player);
+			//console.log(tplPlayer(player));
+			$("#ducks-roster").append( tplPlayer(player) );
+		});
+		
+		var Opponent = data.Opponent.elements;
+		Opponent.forEach(function(player){
+			//console.log(player);
+			//console.log(tplPlayer(player));
+			$("#opponent-roster").append( tplPlayer(player) );
+		});
+	};
+
+    Tabletop.init({ 		
+		key: '0As1Yq-MxSBt2dHE4TjN0X2JKaUFFSHVKLWQ3VUJlRWc',
+		callback: buildApp
+	});
+
+	window.tplSwitcher  = Handlebars.compile($("#tplSwitcher").html());
+	window.tplPlayer     = Handlebars.compile($("#tplPlayer").html());
+	//window.tplOpponent  = Handlebars.compile($("#tplOpponent").html());
+
+    $(document).ready(function() {
+      $('.gd-list').hide();
+      $('.ducks').addClass('active');
+
+      $('.tab li').live('touchstart', function(e){
+        $(this).toggleClass('active');
+        $(this).siblings('li').toggleClass('active');
+        $('.gd-list').toggleClass('active');
+      });
+
+  	});
+  	
+  </script>
+  
+
+  
+  <title>Oregon Football | The Emerald</title>
+</head>
+<body class="game-day roster">
+<div id="wrapper">
+	<div class="main">
+		<ul class="tab item teams">
+			<li class="ducks">Ducks</li>
+			<li class="other">Opponent</li>
+		</ul>
+
+		<ul id='ducks-roster' class='gd-list ducks'>
+			<li class="heading item">
+				<ul>
+					<li class="number">#</li>
+					<li class="name">Name</li>
+					<li class="position">Position</li>
+				</ul>
+			</li>
+		</ul>
+		
+		<ul id='opponent-roster' class='gd-list opponent'>
+			<li class="heading item">
+				<ul>
+					<li class="number">#</li>
+					<li class="name">Name</li>
+					<li class="position">Position</li>
+				</ul>
+			</li>
+		</ul>
+		
+	</div>
+</div>
+</body>
+</html>	

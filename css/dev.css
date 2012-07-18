@@ -17,17 +17,95 @@
 }
 
 
-/* GAME DAY - SCHEDULE
+/* GAME DAY
 ----------------------------------------------- */
-.game-day .schedule .item ul li {
+.game-day .main {
+  padding: 0;
+  width: 320px;
+}
+
+.game-day .item.tab {
+    background: url(../images/table-header-bg.png) repeat-x 0 0;
+    background-size: 2.5% 100%;
+    height: 47px;
+    position: fixed;
+    top: 0;
+    width: 320px;
+}
+
+.tab .active {
+  color: blue!important;
+}
+
+.gd-list.active {
+  display: block!important;
+}
+
+.game-day .gd-list .item {
+  background: url(../images/gd-bg.png) repeat-x 0 0;
+  background-size: 3.2%;
+  display: block;
+  line-height: 12px;
+  height: 48px;
+}
+
+.game-day .gd-list .item ul li, .game-day .tab li {
+  color: #3a3a3a;
 	float: left;
-	font-size: 14px;
+	font-size: 12px;
 	padding: 16px 0;
 }
 
-.game-day .schedule .date {
-	margin-right: 20px;
-}
-.game-day .schedule ul li.location {
-	float: right;
-}
+
+  /* SCHEDULE */
+  .game-day .gd-list .date {
+    margin-left: 15px;
+  	margin-right: 20px;
+  }
+  
+  .game-day .gd-list .team {
+    font-weight: bold;
+  	margin-left: 8px;
+  }
+  
+  .game-day .gd-list ul li.location {
+  	float: right;
+   	margin-right: 15px;
+  }
+
+  /* ROSTER */
+  .roster .item.heading {
+    background: #444;
+    height: 24px;
+  }
+  
+  .roster .gd-list .item.heading li {
+      color: #fff;
+      line-height: 24px;
+      height: 24px;
+      padding: 0!important;
+  }
+  
+  .roster .teams li {
+    text-align: center;
+    width: 159px;
+  }
+
+  .game-day .gd-list {
+    margin-top: 45px;
+  }
+  
+  .game-day .gd-list .number {
+    margin-left: 15px;
+  	margin-right: 20px;
+  }
+  
+  .game-day .gd-list .name {
+    font-weight: bold;
+  	margin-left: 28px;
+  }
+  
+  .game-day .gd-list ul li.position {
+  	float: right;
+   	margin-right: 15px;
+  }

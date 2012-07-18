@@ -13,13 +13,13 @@
 <body class="article">
 	<div id="wrapper">
 		<div class="main">
-			Loading...
+
 		</div> <!-- .content -->			
 	</div> <!-- #wrapper -->
 </body>	
 
   <script type="text/x-handlebars-template" id="storyDetail-tpl">
-	<h2 class="title">{{title}}</h2>
+	<h2 class="title">{{{title}}}</h2>
 	<div class="meta">
 		<ul>
 			<li class="date">{{date}}</li>
@@ -48,7 +48,11 @@
 	  dataType: 'script',
 	  success: function(data){
 	    data.forEach(function(story){	
-			$(".main").html(template(story));
+			$(".main").css({"opacity":"0"})
+			          .html(template(story))
+			          .animate({"opacity":"1"}, 300);
+			var url = "emeraldfootball:finishedLoading(true)"; // tell the UIWebView we're ready to rock and roll. removes the "Loading..." title
+		    window.location = url;
 		});
 	  }
 	});
