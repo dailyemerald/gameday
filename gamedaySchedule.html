@@ -8,107 +8,45 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dev.css">
   <title>Oregon Football | The Emerald</title>
+
+  <script type="text/javascript" src="js/zepto.min.js"></script>
+  <script type="text/javascript" src="js/tabletop.js"></script>
+  <script type="text/javascript" src="js/handlebars.min.js"></script>
+
+  <script type="text/x-handlebars-template" id="tplGame">
+  	<li class="item">
+		<ul>
+			<li class="date">{{date}}</li>
+			<li class="team">{{opponent}}</li>
+			<li class="location">{{location}}</li>
+		</ul>
+	</li>
+  </script>
+
+  <script type="text/javascript">
+
+    var buildApp = function(data) {
+		var Games = data.Games.elements;
+		Games.forEach(function(game){
+			$(".gd-list").append( tplGame(game) );
+		});
+	};
+
+    Tabletop.init({ 		
+		key: '0As1Yq-MxSBt2dDhuYVpQdU5GbnNmbEtIWFpNXzhuSVE',
+		callback: buildApp
+	});
+
+	window.tplGame  = Handlebars.compile($("#tplGame").html());
+
+  </script>
+
 </head>
 <body class="game-day schedule">
 <div id="wrapper">
 	<div class="main">
-<!-- 		<h2 class="title">Schedules</h2> -->
-		<ul class="gd-list">
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
+		<ul class="gd-list" style="margin-top:0">
 			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item current">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="date">Sat, Sep 02</li>
-					<li class="team">Askansas State</li>
-					<li class="location">Eugene, OR</li>
-				</ul>
-			</li>
 		</ul>
 	</div> <!-- .content -->
 </body>
