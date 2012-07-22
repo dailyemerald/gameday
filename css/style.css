@@ -275,7 +275,7 @@ p {
 /* LAYOUT
 ----------------------------------------------- */
 body {
-  background: #e8e8e8; /*background: #000;*/
+  background: #e8e8e8;
 }
 #wrapper {
   display: block;
@@ -319,7 +319,7 @@ body {
   border-radius: 6px;
   height: auto;
   position: absolute;
-  top: 12px;
+  top: 13px;
   width: 63px;
 }
 .feed h2 {
@@ -345,6 +345,9 @@ body {
 }
 /* ARTICLE
 ----------------------------------------------- */
+.article {
+	background: #fff;
+}
 .article .main {
   padding: 0;
   width: 320px;
@@ -374,14 +377,25 @@ body {
   padding: 0 20px 12px 20px;
 }
 .article .content p {
-  font-size: 13.625px;
-  line-height: 23.845px;
-  margin-bottom: 17.03125px;
+  font-size: 14px;
+  line-height: 24px;
+  margin-bottom: 18px;
 }
 .article .content p:last-of-type {
   border-bottom: 1px solid #ddd;
   padding-bottom: 24px;
 }
+
+.article .content a {
+	color: #73a917;
+	text-decoration: underline;
+}
+
+.article .content img, .article .content embed  {
+	height: auto;
+	width: 100%;
+}
+
 /* FEED
 ----------------------------------------------- */
 .fan-feed #wrapper {

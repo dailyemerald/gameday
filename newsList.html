@@ -41,7 +41,7 @@
 	    data.forEach(function(story){	
 		    story.safePermalink = encodeURIComponent(story.permalink);
 			if (typeof story.thumbnail == "undefined") {
-				story.thumbnail = "emerald.png";
+				story.thumbnail = "images/emerald.png";
 			}
 			$("ul").append(template(story));
 		});

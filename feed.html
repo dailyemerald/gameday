@@ -13,17 +13,24 @@
 
 	<script src="http://dev.dailyemerald.com:8100/socket.io/socket.io.js"></script>
 
-	<script id="photo" type="text/html">
-	      <li>
-	        <a href="{{ permalink }}" target="_blank">
-				<img src="{{ src }}"></img>
-			</a><br>
-			<span class="caption">{{ caption }}</span><br>
-			Posted: {{ datestring }}<br> 
-			<!--By: <a href="{{ permalink }}">{{ username }}</a>-->
-	      </li>
+	<script id="tplTweet" type="text/html">
+	<li class="tweet">
+		<img src="{{thumbanil}}" class="thumb" />
+		<h2 class="tweet-title">{{title}}</h2>
+		<a href="" class="tweet-content">{{content}}</a>
+		<p class="time">{{time}}</p>
+	</li>
 	</script>
 	
+	<script id="tplInstagram" type="text/html">
+	<li class="instagram">
+		<img src="{{image}}" class="insta-img" />
+		<img src="{{thumb}}" class="thumb" />
+		<h2 class="instagram-title">{{title}}</h2>
+		<a href="" class="instagram-comment">{{comment}}</a>
+		<p class="time">{{time}}</p>
+	</li>
+	</script>
 	
 	<script type="text/javascript">
 	
@@ -34,7 +41,7 @@
 			caption = '"'+ item.caption.text +'"';
 		}
 		//console.log(datestring)
-		var photo_data = {
+		var instagramModel = {
 			src: item.images.low_resolution.url, //item.images.standard_resolution.url,
 			caption: caption,
 			datestring: datestring,
@@ -49,37 +56,15 @@
 	});
 	
 	var socket = io.connect('http://dev.dailyemerald.com:8100');
-	socket.on('hello', function (data) {
-		//console.log(data);
-	    //socket.emit('my other event', { my: 'data' });
-	});
-	socket.on('fullset', function(fullset) {
-		var fullset = JSON.parse(fullset);
-		window.fullset = fullset;
- 		console.log(fullset);
-		var ids = fullset.ids;
-		var photos = fullset.photos;
-		//console.log('socket got fullset', ids, photos)
-		
-		$("#loadingtext").empty();
-		
-		ids.forEach(function(id) {
-			//console.log(id, photos[id]);
-			var item = photos[id];
-			$("#photos").append(buildEntry(item));
-		});
-
-		$("img").lazyload({
-			threshold: 0
-		});
-
-	});
-	socket.on('new_photo', function(item) {
+	
+	socket.on('newTweet', function(item) {
 		var item = JSON.parse(item);
-		//console.log(item);
-		$("#photos").prepend( buildEntry(item) );
-		
-		
+		$(".feed").prepend( buildTweet(item) );	
+	});
+	
+	socket.on('newInstagram', function(item) {
+		var item = JSON.parse(item);
+		$(".feed").prepend( buildInstagram(item) );	
 	});
 	
 	</script>
@@ -92,67 +77,11 @@
 		
 		<div class="main">
 			<ul class="feed clearfix">				
-					<li class="tweet">
-						<img src="assets/news-thumb.png" class="thumb" />
-						<h2 class="tweet-title">Go Ducks</h2>
-						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
-						<p class="time">3hr</p>
-					</li>
 
-					<li class="tweet">
-						<img src="assets/news-thumb.png" class="thumb" />
-						<h2 class="tweet-title">Go Ducks</h2>
-						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
-						<p class="time">3hr</p>
-					</li>
-
-					<li class="tweet">
-						<img src="assets/news-thumb.png" class="thumb" />
-						<h2 class="tweet-title">Go Ducks</h2>
-						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
-						<p class="time">3hr</p>
-					</li>
-
-					<li class="tweet">
-						<img src="assets/news-thumb.png" class="thumb" />
-						<h2 class="tweet-title">Go Ducks</h2>
-						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
-						<p class="time">3hr</p>
-					</li>
-
-					<li class="tweet">
-						<img src="assets/news-thumb.png" class="thumb" />
-						<h2 class="tweet-title">Go Ducks</h2>
-						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
-						<p class="time">3hr</p>
-					</li>
-
-					<li class="tweet">
-						<img src="assets/news-thumb.png" class="thumb" />
-						<h2 class="tweet-title">Go Ducks</h2>
-						<a href="" class="tweet-content">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
-						<p class="time">3hr</p>
-					</li>
-
-					<li class="instagram">
-						<img src="assets/instagram.jpeg" class="insta-img" />
-						<img src="assets/news-thumb.png" class="thumb" />
-						<h2 class="instagram-title">Go Ducks</h2>
-						<a href="" class="instagram-comment">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
-						<p class="time">3hr</p>
-					</li>
-
-					<li class="instagram">
-						<img src="assets/instagram-2.jpeg" class="insta-img" />
-						<img src="assets/news-thumb.png" class="thumb" />
-						<h2 class="instagram-title">Go Ducks</h2>
-						<a href="" class="instagram-comment">Of Oregon's 19 athletic programs 8 finished ranked 9th or higher nationally during 2011-2012 academic</a>
-						<p class="time">3hr</p>
-					</li>
-
-				</ul>
+			</ul>
 		</div> <!-- .main -->	
 	</div> <!-- #wrapper -->
 
 </body>
 </html>
+
