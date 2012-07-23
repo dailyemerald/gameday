@@ -27,7 +27,7 @@
 		</ul>
 	</div>
 	<div class="article-img">
-		<img src="{{thumbnail}}" alt="" />
+		<img fsrc="{{ thumbnail }}" alt="" />
 	</div>
 	<div class="content">
 		{{{content}}}
@@ -46,8 +46,12 @@
 	$.ajax({
 	  url: storyURL+'/json?callback=?',
 	  dataType: 'script',
-	  success: function(data){
-	    data.forEach(function(story){	
+	  success: function(data) {
+	    data.forEach(function(story) {	
+		    if (typeof story.thumbnail === "undefined") {
+				story.thumbnail = '';
+			}
+		
 			$(".main").css({"opacity":"0"})
 			          .html(template(story))
 			          .animate({"opacity":"1"}, 300);
@@ -57,6 +61,13 @@
 	  }
 	});
 
-  </script>
-</body>
+
+	 	$(document).ready(function() {
+	      $('body').doubleTap(function(){
+	     location.reload();
+	    });
+	 });
+
+	  </script>
+	
 </html>

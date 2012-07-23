@@ -44,15 +44,8 @@ body {
   font-size: 1em;
   line-height: 1.4;
 }
-::-moz-selection {
-  background: #fe57a1;
-  color: #fff;
-  text-shadow: none;
-}
 ::selection {
-  background: #fe57a1;
-  color: #fff;
-  text-shadow: none;
+  background: transparent;
 }
 a {
   color: #00e;
@@ -266,10 +259,11 @@ li {
 }
 a {
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 p {
-  font-family: 'verdana', sans-serif;
+  font-family: 'helvetica neue', sans-serif;
 }
 
 /* LAYOUT
@@ -283,16 +277,18 @@ body {
   width: 320px;
 }
 
+body, #wrapper, .main {
+	overflow: scroll;
+	-webkit-overflow-scrolling: touch;
+}
+
+
 /* NEWS / HOME
 ----------------------------------------------- */
 .main {
-/*   background: #e8e8e8; */
   float: left;
-/*   margin-bottom: 48px; */
   min-height: 420px;
   padding: 0 10px;
-  overflow: scroll;
-  -webkit-overflow-scrolling: touch;
   width: 300px;
 }
 .feed {
@@ -330,7 +326,7 @@ body {
 .feed li a {
   color: #2a2a2a;
   float: left;
-  padding: 12px 20px 4px 78px;
+  padding: 12px 20px 1.25em 78px;
   width: 190px;
 }
 .feed .time {
@@ -341,6 +337,7 @@ body {
 }
 .home .feed .time {
   left: 78px;
+  margin-top: -2.5em;
   top: 0;
 }
 /* ARTICLE
@@ -351,6 +348,7 @@ body {
 .article .main {
   padding: 0;
   width: 320px;
+  	font-family: "verdana", sans-serif!important;
 }
 .article .title {
   font-size: 18px;
@@ -378,6 +376,7 @@ body {
 }
 .article .content p {
   font-size: 14px;
+  font-family: "verdana", sans-serif!important;
   line-height: 24px;
   margin-bottom: 18px;
 }
@@ -391,7 +390,7 @@ body {
 	text-decoration: underline;
 }
 
-.article .content img, .article .content embed  {
+.article .content img {
 	height: auto;
 	width: 100%;
 }
@@ -452,6 +451,174 @@ body {
 .instagram .time {
   top: 308px;
 }
+
+/* DEALS
+----------------------------------------------- */
+.deals .deal {
+	background: white;
+	border: 1px solid #b0b0b0;
+	border-radius: 6px;
+	height: 348px;
+	margin-top: -6px;
+}
+
+.deals .stack {
+	content: ".";
+	background: white;
+	border: 1px solid #b0b0b0;
+	border-radius: 6px;
+	box-shadow: 0 1px 0px 0px rgba(0, 0, 0, .05);
+	height: 344px;
+	position: absolute;
+	z-index: -1;
+	top: 0px;
+	text-indent: -9999em;
+	left: 10px;
+	width: 298px;
+}
+
+.deals .stack.one {
+	height: 346px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+}
+
+.deal-name {
+	color: #4c4c4c;
+	font-size: 22px;
+	left: 25px;
+	position: absolute;
+	top: 12px;
+}
+
+.deal-description {
+	color: #949494;
+	left: 25px;
+	font-size: 12px;
+	position: absolute;
+	top: 40px;
+}
+
+.deal-image {
+	height: 180px;
+	margin-left: 8px;
+	left: 10px;
+	position: absolute;
+	top: 67.5px;
+	width: 280px;
+}
+
+.deal-price {
+	background: url(../images/price-bg.png) no-repeat 0 0;
+	background-size: 100%;
+	color: white;
+	font-weight: bold;
+	height: 34px;
+	left: 7px;
+	padding-top: 2px;
+	position: absolute;
+	text-align: center;
+	text-indent: -6px;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, .4);
+	top: 260px;
+	width: 55.5px;
+}
+
+.deal-note {
+	color: #868686;
+	font-size: 10px;
+	left: 21px;
+	line-height: 12px;
+	position: absolute;
+	top: 296px;
+	width: 275px;
+}
+
+.deals.no-coupon .deal-note {
+	width: 125px;
+}
+
+.deal-coupon {
+	left: 157px;
+	height: 22px;
+	padding: 5px;
+	position: absolute;
+	top: 295px;
+	-webkit-tap-highlight-color: transparent;
+	width: 135px;
+}
+
+.deal-coupon span {
+	background: -webkit-linear-gradient(top, #7C7C7C 0%,#D1D1D1 2%,#D0D0D0 4%,#C4C4C4 6%,#B6B6B6 31%,#949494 79%,#8B8B8B 98%,#7C7C7C 100%);
+	border-radius: 3px;
+	border: 1px solid #7C7C7C;
+	box-shadow: inset 0 1px rgba(255, 255, 255, .5);
+	color: white!important;
+	font-size: 14px;
+	font-weight: bold;
+	height: 22px;
+/*	left: 162px;*/
+	padding-top: 2px;
+	position: absolute;
+	text-align: center;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, .4);
+	
+	width: 135px;
+}
+
+.deal-coupon span:active {
+	background: -webkit-linear-gradient(top, #7c7c7c 0%,#8b8b8b 2%,#949494 21%,#b6b6b6 69%,#c4c4c4 94%,#d0d0d0 96%,#d1d1d1 98%,#7c7c7c 100%);
+	box-shadow: inset 0 -1px rgba(255, 255, 255, .5);
+}
+
+/* INFO
+----------------------------------------------- */
+body.info {
+	background: #fff;
+}
+
+body.info .main {
+	padding: 0 20px;
+	width: 280px;
+}
+
+body.info h1 {
+    font-size: 2em;
+    margin: 0 0 0.67em 0;
+}
+
+body.info h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+body.info h3 {
+	color: #666;
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+body.info h4 {
+    font-size: 1em;
+    margin: 1em 0 0 0;
+}
+
+body.info h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+body.info h6 {
+    font-size: 0.75em;
+    margin: 2.33em 0;
+}
+
+
+body.info p {
+	font-size: 1em;
+	line-height: 1.5em;
+	margin: 0 0 1.5em 0;
+}
+
 
 /* =============================================================================
    Non-Semantic Helper Classes

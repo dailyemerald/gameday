@@ -8,11 +8,10 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dev.css">
 
-	<script src="js/libs/modernizr-2.5.3.min.js"></script>
-	<script src="js/libs/zepto.min.js"></script>
-
-	<script src="http://dev.dailyemerald.com:8100/socket.io/socket.io.js"></script>
-
+	<script src="http://dev.dailyemerald.com:6767/socket.io/socket.io.js"></script>
+	<script src="js/zepto.min.js"></script>
+	<script type="text/javascript" src="js/handlebars.min.js"></script>
+	
 	<script id="tplTweet" type="text/html">
 	<li class="tweet">
 		<img src="{{thumbanil}}" class="thumb" />
@@ -22,10 +21,10 @@
 	</li>
 	</script>
 	
-	<script id="tplInstagram" type="text/html">
+	<script id="tplInstagram" type="text/x-handlebars-template">
 	<li class="instagram">
-		<img src="{{image}}" class="insta-img" />
-		<img src="{{thumb}}" class="thumb" />
+		<img src="{{{image}}}" class="insta-img" />
+		<img src="{{{thumb}}}" class="thumb" />
 		<h2 class="instagram-title">{{title}}</h2>
 		<a href="" class="instagram-comment">{{comment}}</a>
 		<p class="time">{{time}}</p>
@@ -33,8 +32,11 @@
 	</script>
 	
 	<script type="text/javascript">
+
+  	  var tplInstagram = Handlebars.compile($('#tplInstagram').html());
+
 	
-	function buildEntry(item) { // get a json object, does somt stuff, returns html ready to be inserted
+	/*function buildEntry(item) { // get a json object, does somt stuff, returns html ready to be inserted
 		var datestring = new Date(parseInt(item.created_time)*1000).toLocaleString();
 		var caption  = "";
 		if (item.caption && item.caption.text) {
@@ -50,16 +52,31 @@
 		}
 		return ich.photo(photo_data);
 	}
+	*/
 	
 	$(document).ready(function() {
 
 	});
 	
-	var socket = io.connect('http://dev.dailyemerald.com:8100');
+	var socket = io.connect('http://dev.dailyemerald.com:6767');
 	
-	socket.on('newTweet', function(item) {
-		var item = JSON.parse(item);
-		$(".feed").prepend( buildTweet(item) );	
+	var strdecode = function( data ) {
+      return JSON.parse( decodeURIComponent( escape ( data ) ) );
+    }
+	
+	socket.on('newItem', function(item) {
+		var item = strdecode(item)
+		//var item = JSON.parse(item);
+		//$(".feed").prepend( buildTweet(item) );	
+		console.log(item.data);
+		cleanedItem = {
+			image: item.data.images.low_resolution.url,
+			thumb: item.data.user['profile_picture'],
+			title:     item.data.caption.text,
+			comment: "a comment"
+		};
+		console.log(cleanedItem);
+		$(".feed").prepend( tplInstagram(cleanedItem) );
 	});
 	
 	socket.on('newInstagram', function(item) {
