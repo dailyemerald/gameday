@@ -27,7 +27,20 @@
 		</ul>
 	</div>
 	<div class="article-img">
-		<img fsrc="{{ thumbnail }}" alt="" />
+		<img src="{{ thumbnail }}" alt="" />
+	</div>
+	<div class="content">
+		{{{content}}}
+	</div>
+  </script>
+
+<script type="text/x-handlebars-template" id="storyDetail-noImage-tpl">
+	<h2 class="title">{{{title}}}</h2>
+	<div class="meta">
+		<ul>
+			<li class="date">{{date}}</li>
+			<li class="byline">{{author}}</li>
+		</ul>
 	</div>
 	<div class="content">
 		{{{content}}}
@@ -38,8 +51,8 @@
   <script type="text/javascript" src="js/handlebars.min.js"></script>
   <script type="text/javascript">
 
-	var templateSource = $('#storyDetail-tpl').html();
-	var template = Handlebars.compile(templateSource);
+	var storyDetail = Handlebars.compile($('#storyDetail-tpl').html());
+	var storyDetailNoImage = Handlebars.compile($('#storyDetail-noImage-tpl').html());
 
 	var storyURL = decodeURIComponent(window.location.href.split('=')[1]); //TODO: needs a sanity check here...
 	
@@ -48,12 +61,15 @@
 	  dataType: 'script',
 	  success: function(data) {
 	    data.forEach(function(story) {	
-		    if (typeof story.thumbnail === "undefined") {
-				story.thumbnail = '';
+			var storyHTML = "";
+		    if (typeof story.thumbnail === "string") {
+				storyHTML = storyDetail(story);
+			} else {
+				storyHTML = storyDetailNoImage(story);
 			}
 		
 			$(".main").css({"opacity":"0"})
-			          .html(template(story))
+			          .html(storyHTML)
 			          .animate({"opacity":"1"}, 300);
 			var url = "emeraldfootball:finishedLoading(true)"; // tell the UIWebView we're ready to rock and roll. removes the "Loading..." title
 		    window.location = url;
@@ -61,9 +77,8 @@
 	  }
 	});
 
-
-	 	$(document).ready(function() {
-	      $('body').doubleTap(function(){
+	 $(document).ready(function() {
+	   $('body').doubleTap(function(){
 	     location.reload();
 	    });
 	 });
