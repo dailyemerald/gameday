@@ -11,12 +11,52 @@
 	<script src="http://dev.dailyemerald.com:6767/socket.io/socket.io.js"></script>
 	<script src="js/zepto.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.min.js"></script>
-	
-	<script id="tplTweet" type="text/html">
+
+	<script type="text/javascript">
+	(function($) {
+		var interpolate = function (source, target, shift) { 
+			return (source + (target - source) * shift); 
+		};
+
+		var easing = function (pos) { 
+		    return (-Math.cos(pos * Math.PI) / 2) + .5; 
+		};
+
+		$.scroll = function(endY, duration, easingF) {
+			endY = endY || ($.os.android ? 1 : 0);
+			duration = duration || 200;
+			(typeof easingF === 'function') && (easing = easingF);
+
+			var startY = window.pageYOffset,
+				startT  = Date.now(),
+				finishT = startT + duration;
+
+			var animate = function() {
+				var now = +(new Date()),
+					shift = (now > finishT) ? 1 : (now - startT) / duration;
+
+				window.scrollTo(0, interpolate(startY, endY, easing(shift)));
+
+				(now > finishT) || setTimeout(animate, 15);
+			};
+
+			animate();
+		};
+	}(Zepto));
+	</script>
+
+	<script id="tplBanner" type="text/html">	
+	  <div class="bannerinner">{{num}} new item{{suffix}}</div>
+	</script>
+	<script id="tplImagePreloader" type="text/html">	
+	  <img src="{{{image}}}"></img>
+	</script>
+
+	<script id="tplTwitter" type="text/html">	
 	<li class="tweet">
-		<img src="{{thumbanil}}" class="thumb" />
-		<h2 class="tweet-title">{{title}}</h2>
-		<a href="" class="tweet-content">{{content}}</a>
+		<img src="{{{thumbnail}}}" class="thumb" />
+		<h2 class="tweet-title">{{{title}}}</h2>
+		<a href="#" class="tweet-content">{{{content}}}</a>
 		<p class="time">{{time}}</p>
 	</li>
 	</script>
@@ -26,85 +66,148 @@
 		<img src="{{{image}}}" class="insta-img" />
 		<img src="{{{thumb}}}" class="thumb" />
 		<h2 class="instagram-title">{{title}}</h2>
-		<a href="" class="instagram-comment">{{comment}}</a>
+		<a href="#" class="instagram-comment">{{comment}}</a>
 		<p class="time">{{time}}</p>
 	</li>
 	</script>
 	
 	<script type="text/javascript">
 
-  	  var tplInstagram = Handlebars.compile($('#tplInstagram').html());
-
-	
-	/*function buildEntry(item) { // get a json object, does somt stuff, returns html ready to be inserted
-		var datestring = new Date(parseInt(item.created_time)*1000).toLocaleString();
-		var caption  = "";
-		if (item.caption && item.caption.text) {
-			caption = '"'+ item.caption.text +'"';
-		}
-		//console.log(datestring)
-		var instagramModel = {
-			src: item.images.low_resolution.url, //item.images.standard_resolution.url,
-			caption: caption,
-			datestring: datestring,
-			permalink: item.link,
-			username: item.user.full_name
-		}
-		return ich.photo(photo_data);
-	}
-	*/
-	
-	$(document).ready(function() {
-
-	});
+  	var tplInstagram = Handlebars.compile($('#tplInstagram').html());
+  	var tplTwitter   = Handlebars.compile($('#tplTwitter').html());
+  	var tplBanner   = Handlebars.compile($('#tplBanner').html());
+  	var tplImagePreloader   = Handlebars.compile($('#tplImagePreloader').html());
 	
 	var socket = io.connect('http://dev.dailyemerald.com:6767');
 	
+	window.newItems = 0;
+	window.itemsToShow = [];
+	window.introActive = true;
+	
 	var strdecode = function( data ) {
-      return JSON.parse( decodeURIComponent( escape ( data ) ) );
+	  try {
+      	return JSON.parse( decodeURIComponent( escape ( data ) ) );
+	  } catch (error) {
+		return {}	//TODO: this is bad.
+	  }
     }
 	
 	socket.on('newItem', function(item) {
 		var item = strdecode(item)
-		//var item = JSON.parse(item);
-		//$(".feed").prepend( buildTweet(item) );	
-		console.log(item.data);
-		cleanedItem = {
-			image: item.data.images.low_resolution.url,
-			thumb: item.data.user['profile_picture'],
-			title:     item.data.caption.text,
-			comment: "a comment"
-		};
-		console.log(cleanedItem);
-		$(".feed").prepend( tplInstagram(cleanedItem) );
+
+		if (item.type === "instagram") {
+			cleanedItem = {
+				image: item.data.images.low_resolution.url,
+				thumb: item.data.user['profile_picture'],
+				title: item.data.user.full_name,
+				comment: ""
+			};
+			if (item.data && item.data.caption && typeof item.data.caption.text === "string") {
+				cleanedItem.comment = item.data.caption.text;
+			}
+			console.log(item.data);
+		    $("#loadingzone").append( tplImagePreloader({image: item.data.images.low_resolution.url}) );
+			itemsToShow.push( tplInstagram(cleanedItem) );
+			newItems += 1;
+			if (newItems > 1) {
+				var suffix = "s";
+			} else {
+				var suffix = "";
+			}
+			$("#banner").html(tplBanner({num: newItems, suffix:suffix}));
+			
+	    } else if (item.type === "twitter") {
+		    console.log(item.data)
+		    $("#loadingzone").append(tplImagePreloader({image:item.data.thumbnail}));
+			itemsToShow.push( tplTwitter(item.data) );
+			newItems += 1;
+			if (newItems > 1) {
+				var suffix = "s";
+			} else {
+				var suffix = "";
+			}
+			$("#banner").html(tplBanner({num: newItems, suffix:suffix}));
+		} else {
+			console.log("unknown item type")
+		}
 	});
 	
-	socket.on('newInstagram', function(item) {
-		var item = JSON.parse(item);
-		$(".feed").prepend( buildInstagram(item) );	
+	$(document).ready(function() {
+		$("#banner").on('click', function() {
+		
+			var topItem = $(".feed li").first();
+			
+			console.log('offset', topItem, topItem.offset(), document.body.scrollTop );
+
+			var topItemPrevOffset = topItem.offset().top - document.body.scrollTop;
+			
+			var bigItemString = "";
+			itemsToShow.forEach(function(item){
+				//$(".feed").prepend(item);
+				bigItemString += item;
+			});
+			$(".feed").prepend(bigItemString);
+			//$("img").animate({opacity: 0},100);
+			
+			window.scrollTo(0, topItem.offset().top - topItemPrevOffset);
+			//setTimeout(function() {
+			//	window.scrollTo(0, topItem.offset().top - topItemPrevOffset);
+				//$.scroll(topItem.offset().top - topItemPrevOffset, 1500);
+			//}, 0);
+			
+			//setTimeout(function() {
+			//	$("img").animate({opacity:1}, 500);
+			//}, 150);
+						
+			itemsToShow = [];
+			newItems = 0;
+			
+			$("#banner").html(tplBanner({num: 0, suffix:'s'}));
+		});
 	});
-	
 	</script>
 
+<style type="text/css">
+#banner {
+	z-index: 5;
+	font-size: 14px;
+	height:35px;
+}
+
+.bannerinner {
+	text-align: center;
+	padding: 6px 0px;
+}
+.feed img {
+	height: 300px;
+}
+#loadingzone {
+	position:fixed;
+	left: -9999px;
+}
+</style>
 </head>
-</head>
+
 <body class="fan-feed">
 	
 	<div id="wrapper">
 		
 		<div class="main">
+			<div id="banner" class="tweet"></div>
 			<ul class="feed clearfix">				
 				
-				<li class="tweet">
+				<li id="intromessage" class="tweet">
 					<img src="images/emerald.png" class="thumb" />
-					<h2 class="tweet-title">Not so fast!</h2>
-					<a href="" class="tweet-content">During a game, tweets and Instagram photos will flow through here. But not quite yet.</a>
+					<h2 class="tweet-title">Hello there!</h2>
+					<a href="" class="tweet-content">We're still working out some things here... please bear with us.</a>
 					<p class="time"></p>
 				</li>
 				
 			</ul>
 		</div> <!-- .main -->	
 	</div> <!-- #wrapper -->
+
+   <div id="loadingzone"></div>
 
 </body>
 </html>
