@@ -6,8 +6,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/dev.css">
-
 	<script src="http://dev.dailyemerald.com:6767/socket.io/socket.io.js"></script>
 	<script src="js/zepto.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.min.js"></script>
@@ -52,8 +50,10 @@
 	  <img src="{{{image}}}"></img>
 	</script>
 
+
 	<script id="tplTwitter" type="text/html">	
-	<li class="tweet">
+
+	<li class="tweet justadded" style="">
 		<img src="{{{thumbnail}}}" class="thumb" />
 		<h2 class="tweet-title">{{{title}}}</h2>
 		<a href="#" class="tweet-content">{{{content}}}</a>
@@ -62,12 +62,12 @@
 	</script>
 	
 	<script id="tplInstagram" type="text/x-handlebars-template">
-	<li class="instagram">
+	<li class="instagram justadded" style="">
 		<img src="{{{image}}}" class="insta-img" />
 		<img src="{{{thumb}}}" class="thumb" />
 		<h2 class="instagram-title">{{title}}</h2>
 		<a href="#" class="instagram-comment">{{comment}}</a>
-		<p class="time">{{time}}</p>
+		<p class="time">now</p>
 	</li>
 	</script>
 	
@@ -105,8 +105,9 @@
 			if (item.data && item.data.caption && typeof item.data.caption.text === "string") {
 				cleanedItem.comment = item.data.caption.text;
 			}
-			console.log(item.data);
-		    $("#loadingzone").append( tplImagePreloader({image: item.data.images.low_resolution.url}) );
+			//console.log(item.data);
+		    //$("#loadingzone").append( tplImagePreloader({image: item.data.images.low_resolution.url}) );
+			$("#loadingzone").append( tplInstagram(cleanedItem) );
 			itemsToShow.push( tplInstagram(cleanedItem) );
 			newItems += 1;
 			if (newItems > 1) {
@@ -117,8 +118,9 @@
 			$("#banner").html(tplBanner({num: newItems, suffix:suffix}));
 			
 	    } else if (item.type === "twitter") {
-		    console.log(item.data)
-		    $("#loadingzone").append(tplImagePreloader({image:item.data.thumbnail}));
+		    //console.log("tweet!", item.data);
+		    //$("#loadingzone").append(tplImagePreloader({image:item.data.thumbnail}));
+			$("#loadingzone").append( tplTwitter(item.data) );
 			itemsToShow.push( tplTwitter(item.data) );
 			newItems += 1;
 			if (newItems > 1) {
@@ -128,43 +130,79 @@
 			}
 			$("#banner").html(tplBanner({num: newItems, suffix:suffix}));
 		} else {
-			console.log("unknown item type")
+			console.log("unknown item type");
 		}
 	});
 	
 	$(document).ready(function() {
 		$("#banner").on('click', function() {
-		
-			var topItem = $(".feed li").first();
-			
-			console.log('offset', topItem, topItem.offset(), document.body.scrollTop );
-
-			var topItemPrevOffset = topItem.offset().top - document.body.scrollTop;
-			
-			var bigItemString = "";
-			itemsToShow.forEach(function(item){
-				//$(".feed").prepend(item);
-				bigItemString += item;
-			});
-			$(".feed").prepend(bigItemString);
-			//$("img").animate({opacity: 0},100);
-			
-			window.scrollTo(0, topItem.offset().top - topItemPrevOffset);
-			//setTimeout(function() {
-			//	window.scrollTo(0, topItem.offset().top - topItemPrevOffset);
-				//$.scroll(topItem.offset().top - topItemPrevOffset, 1500);
-			//}, 0);
-			
-			//setTimeout(function() {
-			//	$("img").animate({opacity:1}, 500);
-			//}, 150);
-						
-			itemsToShow = [];
-			newItems = 0;
-			
-			$("#banner").html(tplBanner({num: 0, suffix:'s'}));
+			pullToRefresh();
 		});
 	});
+	
+	window.pullToRefresh = function() {
+		$("#banner").html("<div class=\"bannerinner\">Loading...</div>");
+		window.topItem = $("#feed li").first();		
+	
+		var newKids = $('#feed li');
+		//$("#fixed").hide(); //should already be hidden...
+		for (var i=0;i<5;i++) {
+			if (i<newKids.length) {
+				var thisKid = $(newKids[i]);
+				var thisKidHTML = thisKid.html();
+				var fixedKid = $('<li>').html( thisKidHTML );
+				fixedKid.attr('class', thisKid.attr('class'));
+				//console.log(thisKid, thisKidHTML, fixedKid);
+				fixedKid.css('top', thisKid.offset().top);
+				fixedKid.css('left', thisKid.offset().left);
+				fixedKid.css('position', 'fixed');
+				//fixedKid.css('z-index', '999');
+				fixedKid.css('-webkit-transform', 'translate3d(0,0,-10px);');
+				$("#fixed").append(fixedKid);
+			}
+		}
+		newKids = null;// umm... useful?
+		
+		//$(".feed").css()
+		//$("#fixed").show();
+	
+		//console.log('offset', topItem, topItem.offset(), document.body.scrollTop );
+
+		window.topItemPrevOffset = topItem.offset().top - document.body.scrollTop;
+	
+		setTimeout(function() {
+			var bigItemString = "";
+			window.itemsToShow.forEach(function(item){
+				//$(".feed").prepend(item);
+				bigItemString = item + bigItemString; //prepend
+			});
+			itemsToShow = [];
+			newItems = 0;
+			$("#banner").html('');
+			$("#feed").prepend(bigItemString);
+			//$("img").animate({opacity: 0},100);
+		
+			window.scrollTo(0, window.topItem.offset().top - window.topItemPrevOffset);	
+			//$.scroll(topItem.offset().top - topItemPrevOffset, 100);
+		}, 200);
+		// -webkit-transform:translate3d(0, 0, 0); -webkit-backface-visibility: hidden; -webkit-perspective: 1000;
+		
+		setTimeout(function() {
+		  $("#fixed").html('');	
+		  $("#loadingzone").html('');	
+		
+		  /*
+		  var items = $("#feed li");
+		  var itemsLength = items.length;
+		  if (itemsLength > 10) {
+		    for(var i=10;i<itemsLength;i++) {
+			  $(items[i]).hide();
+			  //console.log('removed', i, items[i], 'remaining:', $("#feed li").length);
+		    }	
+		  }
+		  */
+		}, 300);
+	}
 	</script>
 
 <style type="text/css">
@@ -185,6 +223,10 @@
 	position:fixed;
 	left: -9999px;
 }
+#fixed {
+	z-index:50;
+	
+}
 </style>
 </head>
 
@@ -194,7 +236,7 @@
 		
 		<div class="main">
 			<div id="banner" class="tweet"></div>
-			<ul class="feed clearfix">				
+			<ul id="feed" class="feed clearfix">				
 				
 				<li id="intromessage" class="tweet">
 					<img src="images/emerald.png" class="thumb" />
@@ -204,7 +246,10 @@
 				</li>
 				
 			</ul>
+			<ul id="fixed" class="feed clearfix">
+			</ul>
 		</div> <!-- .main -->	
+		
 	</div> <!-- #wrapper -->
 
    <div id="loadingzone"></div>

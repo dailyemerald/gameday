@@ -6,7 +6,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/dev.css">
   <title>Oregon Football | The Emerald</title>
 
   <script type="text/javascript" src="js/zepto.min.js"></script>
@@ -15,8 +14,9 @@
 
   <script type="text/x-handlebars-template" id="tplGame">
   	<li class="item">
-		<ul>
-			<li class="date">{{date}}</li>
+		<ul class="clearfix">
+			<li class="date"><span>{{date}}</span>
+			<span class="time">12:00 PM</span></li>
 			<li class="team">{{opponent}}</li>
 			<li class="location">{{location}}</li>
 		</ul>

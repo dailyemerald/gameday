@@ -6,8 +6,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/dev.css">
-  
   <script type="text/javascript" src="js/zepto.min.js"></script>
   <script type="text/javascript" src="js/tabletop.js"></script>
   <script type="text/javascript" src="js/handlebars.min.js"></script>
@@ -54,15 +52,34 @@
       $('.ducks').addClass('active');
 
       $('.tab li').live('touchstart', function(e){
-        $(this).toggleClass('active');
-        $(this).siblings('li').toggleClass('active');
-        $('.gd-list').toggleClass('active');
+      
+        if(!$(this).hasClass('active')) {
+          $(this).toggleClass('active');
+          $(this).siblings('li').toggleClass('active');
+          $('.gd-list').toggleClass('active');
+        }
+      
       });
 
   	});
   	
   </script>
   
+  
+  <!-- DOUBLE TAP CODE BEGINS -->
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      $('body').doubleTap(function(){
+		location.reload();
+      });
+
+  	});
+
+  </script>
+<!-- DOUBLE TAP CODE ENDS -->
 
   
   <title>Oregon Football | The Emerald</title>
@@ -70,31 +87,32 @@
 <body class="game-day roster">
 <div id="wrapper">
 	<div class="main">
-		<ul class="tab item teams">
-			<li class="ducks">Ducks</li>
-			<li class="other">Opponent</li>
-		</ul>
-
-		<ul id='ducks-roster' class='gd-list ducks'>
-			<li class="heading item">
-				<ul>
-					<li class="number">#</li>
-					<li class="name">Name</li>
-					<li class="position">Position</li>
-				</ul>
-			</li>
-		</ul>
-		
-		<ul id='opponent-roster' class='gd-list opponent'>
-			<li class="heading item">
-				<ul>
-					<li class="number">#</li>
-					<li class="name">Name</li>
-					<li class="position">Position</li>
-				</ul>
-			</li>
-		</ul>
-		
+  <div class="scroll">
+  		<ul class="tab item teams">
+  			<li class="ducks">Ducks</li>
+  			<li class="other">Opponent</li>
+  		</ul>
+  
+  		<ul id='ducks-roster' class='gd-list ducks'>
+  			<li class="heading item">
+  				<ul>
+  					<li class="number">#</li>
+  					<li class="name">Name</li>
+  					<li class="position">Position</li>
+  				</ul>
+  			</li>
+  		</ul>
+  		
+  		<ul id='opponent-roster' class='gd-list opponent'>
+  			<li class="heading item">
+  				<ul>
+  					<li class="number">#</li>
+  					<li class="name">Name</li>
+  					<li class="position">Position</li>
+  				</ul>
+  			</li>
+  		</ul>
+  </div>	<!-- .scroll -->
 	</div>
 </div>
 </body>
