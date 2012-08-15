@@ -341,9 +341,10 @@
 		var tpl = Handlebars.compile($("#tpl").html());
 
 		$.ajax({
-		    url: "http://uoduckstore.com/apis/apps/DucksGameDay/deals.php?callback=?",
+  		    url: "http://uoduckstore.com/apis/apps/DucksGameDay/deals_staging.php?callback=?",
 		    dataType: 'script',
 			success: function(data) {
+				console.log(data);
 				if (typeof data.message !== "string") {
 					data.message = "Show this code to redeem."
 				}
