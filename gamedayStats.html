@@ -8,161 +8,74 @@
   <link rel="stylesheet" href="css/style.css">
   <title>Oregon Football | The Emerald</title>
 
-  <!-- DOUBLE TAP CODE BEGINS -->
-
   <script type="text/javascript" src="js/zepto.min.js"></script>
+  <script type="text/javascript" src="js/tabletop.js"></script>
+  <script type="text/javascript" src="js/handlebars.min.js"></script>
+
+  <script type="text/x-handlebars-template" id="tplStatsHeader">
+	<li class="heading item">
+		<ul>
+			<li class="one">{{one}}</li>
+			<li class="two">{{two}}</li>
+			<li class="three">{{three}}</li>
+			<li class="four">{{four}}</li>
+			<li class="five">{{five}}</li>
+			<li class="six">{{six}}</li>
+		</ul>
+	</li>
+  </script>
+
+  <script type="text/x-handlebars-template" id="tplStats">
+	<li class="item">
+		<ul>
+			<li class="one">{{one}}</li>
+			<li class="two">{{two}}</li>
+			<li class="three">{{three}}</li>
+			<li class="four">{{four}}</li>
+			<li class="five">{{five}}</li>
+			<li class="six">{{six}}</li>
+		</ul>
+	</li>
+  </script>
+
   <script type="text/javascript">
+	var buildApp = function(data) {
+		var Stats = data.Stats.elements;
+		Stats.forEach(function(stat){
+			if (stat.one === "NAME") {
+			  $("#stats").append( tplStatsHeader(stat) );	
+			} else { 
+			  $("#stats").append( tplStats(stat) );
+			}
+		});
+	};
 
+    Tabletop.init({ 		
+		key: '0As1Yq-MxSBt2dDBjTExWNlpHdGRJTTBTalAyb19KWnc',
+		callback: buildApp
+	});
+
+	window.tplStatsHeader  = Handlebars.compile($("#tplStatsHeader").html());
+	window.tplStats        = Handlebars.compile($("#tplStats").html());
+
+	/*
     $(document).ready(function() {
-
       $('body').doubleTap(function(){
 		location.reload();
       });
-
   	});
-
+	*/
   </script>
-<!-- DOUBLE TAP CODE ENDS -->
 
 </head>
 <body class="game-day stats">
 <div id="wrapper">
 	<div class="main">
 	
-		<!-- <ul class="tab item teams">
-			<li class="ducks">University of Oregon</li>
-			<li class="other">Kent State</li>
-		</ul> -->
-
-
-		<ul class="gd-list">
-			<li class="heading item">
-				<ul>
-					<li class="one">Rushing</li>
-					<li class="two">ATT</li>
-					<li class="three">YDS</li>
-					<li class="four">AVG</li>
-					<li class="five">TD</li>
-					<li class="six">LONG</li>					
-				</ul>
-			</li>
-			<li class="item">
-				<ul>
-					<li class="one">L. James</li>
-					<li class="two">105</li>
-					<li class="three">905</li>
-					<li class="four">8.4</li>
-					<li class="five">8</li>
-					<li class="six">90</li>					
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="one">K. Barner</li>
-					<li class="two">79</li>
-					<li class="three">560</li>
-					<li class="four">7.1</li>
-					<li class="five">7</li>
-					<li class="six">84</li>					
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="one">Rushing</li>
-					<li class="two">ATT</li>
-					<li class="three">YDS</li>
-					<li class="four">AVG</li>
-					<li class="five">TD</li>
-					<li class="six">LONG</li>					
-				</ul>
-			</li>
-		</ul>
-		
-				<ul class="gd-list">
-			<li class="heading item">
-				<ul>
-					<li class="one">Rushing</li>
-					<li class="two">ATT</li>
-					<li class="three">YDS</li>
-					<li class="four">AVG</li>
-					<li class="five">TD</li>
-					<li class="six">LONG</li>					
-				</ul>
-			</li>
-			<li class="item">
-				<ul>
-					<li class="one">L. James</li>
-					<li class="two">105</li>
-					<li class="three">905</li>
-					<li class="four">8.4</li>
-					<li class="five">8</li>
-					<li class="six">90</li>					
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="one">K. Barner</li>
-					<li class="two">79</li>
-					<li class="three">560</li>
-					<li class="four">7.1</li>
-					<li class="five">7</li>
-					<li class="six">84</li>					
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="one">Rushing</li>
-					<li class="two">ATT</li>
-					<li class="three">YDS</li>
-					<li class="four">AVG</li>
-					<li class="five">TD</li>
-					<li class="six">LONG</li>					
-				</ul>
-			</li>
-		</ul>
-		
-				<ul class="gd-list">
-			<li class="heading item">
-				<ul>
-					<li class="one">Rushing</li>
-					<li class="two">ATT</li>
-					<li class="three">YDS</li>
-					<li class="four">AVG</li>
-					<li class="five">TD</li>
-					<li class="six">LONG</li>					
-				</ul>
-			</li>
-			<li class="item">
-				<ul>
-					<li class="one">L. James</li>
-					<li class="two">105</li>
-					<li class="three">905</li>
-					<li class="four">8.4</li>
-					<li class="five">8</li>
-					<li class="six">90</li>					
-				</ul>
-			</li>
-			
-			<li class="item">
-				<ul>
-					<li class="one">K. Barner</li>
-					<li class="two">79</li>
-					<li class="three">560</li>
-					<li class="four">7.1</li>
-					<li class="five">7</li>
-					<li class="six">84</li>					
-				</ul>
-			</li>
+		<ul id="stats" class="gd-list">
 			
 		</ul>
 		
-
-			
-	
 	</div>
 </div> 
 </body>

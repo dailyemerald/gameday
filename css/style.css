@@ -270,7 +270,10 @@ p {
 ----------------------------------------------- */
 body {
   background: #e8e8e8;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 }
+
 #wrapper {
   display: block;
   height: 100%;
@@ -715,7 +718,7 @@ body {
 }
 
 .deals.coupon .deal-note {
-	width: 125px;
+	width: 135px;
 }
 
 .deal-coupon {

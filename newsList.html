@@ -12,14 +12,8 @@
 <body class="home" ontouchstart=""> <!-- Hack to be able to use :active -->
 	<div id="wrapper">
 		<div class="main">
-		<div class="scroll">
-		
-		<section>
 			<ul class="feed clearfix">	
 			</ul>
-		</section>
-		
-		</div>
 		</div> <!-- .content -->			
 	</div> <!-- #wrapper -->
 </body>	
@@ -284,6 +278,10 @@
 			
 			$("ul").append(template(story));		
 		});	
+		
+		var url = "emeraldfootball:finishedLoading(true)"; // tell the UIWebView we're ready to rock and roll. removes the "Loading..." title
+	    window.location = url;
+		
    	    tappable('a', function(e) {
 	 	  window.location = $(e.target).attr('href');
 	    });

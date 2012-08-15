@@ -21,6 +21,11 @@
       $('body').doubleTap(function(){
 		location.reload();
       });
+	
+	  $('.deal-coupon').tap(function() {
+		window.location = "showDealsModal:func(true);";
+	  });
+	
 
   	});
 
@@ -37,7 +42,7 @@
 			<p class="deal-description">Green frames yellow O logo</p>
 			<img src="images/deal-image.png" class="deal-image" />
 			<p class="deal-price">$45</p>
-			<p class="deal-note">Available at any DuckStore. Tap Redeem and show the code to the cashier.</p>
+			<p class="deal-note">Available at any Duck Store. Tap Redeem and show the code to the cashier.</p>
 			<a href="" class="deal-coupon"><span>Get the Coupon</span></a>
 		</div> <!-- .deal -->
 		

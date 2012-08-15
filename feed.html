@@ -11,6 +11,34 @@
 	<script type="text/javascript" src="js/handlebars.min.js"></script>
 
 	<script type="text/javascript">
+	/*
+	 * JavaScript Pretty Date
+	 * Copyright (c) 2011 John Resig (ejohn.org)
+	 * Licensed under the MIT and GPL licenses.
+	 */
+	// Takes an ISO time and returns a string representing how
+	// long ago the date represents.
+	function prettyDate(time) {
+		var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," "))
+		  ,	diff = (((new Date()).getTime() - date.getTime()) / 1000)
+		  ,	day_diff = Math.floor(diff / 86400);
+
+		if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
+			return;
+
+		return day_diff == 0 && (
+				diff < 60 && "just now" ||
+				diff < 120 && "1 minute ago" ||
+				diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+				diff < 7200 && "1 hour ago" ||
+				diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+			day_diff == 1 && "Yesterday" ||
+			day_diff < 7 && day_diff + " days ago" ||
+			day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
+	}
+	</script>
+
+	<script type="text/javascript">
 	(function($) {
 		var interpolate = function (source, target, shift) { 
 			return (source + (target - source) * shift); 
@@ -57,7 +85,7 @@
 		<img src="{{{thumbnail}}}" class="thumb" />
 		<h2 class="tweet-title">{{{title}}}</h2>
 		<a href="#" class="tweet-content">{{{content}}}</a>
-		<p class="time">{{time}}</p>
+		<p class="time" time="{{time}}"></p>
 	</li>
 	</script>
 	
@@ -67,7 +95,7 @@
 		<img src="{{{thumb}}}" class="thumb" />
 		<h2 class="instagram-title">{{title}}</h2>
 		<a href="#" class="instagram-comment">{{comment}}</a>
-		<p class="time">now</p>
+		<p class="time" time="{{time}}"></p>
 	</li>
 	</script>
 	
@@ -78,7 +106,32 @@
   	var tplBanner   = Handlebars.compile($('#tplBanner').html());
   	var tplImagePreloader   = Handlebars.compile($('#tplImagePreloader').html());
 	
+	//////////////////////////////////////
+	
 	var socket = io.connect('http://dev.dailyemerald.com:6767');
+	
+	socket.emit('hello', {}); // this tells the server to make a new build set and send it with the 'rebuild' event below:	
+	socket.on('rebuild', function(items) { 
+		$("#fixed").html('');	
+		console.log("rebuild", items);
+		
+		console.log(typeof items, items.length, JSON.stringify(items))
+ 		try {
+		  items.forEach(function(item) { //this assumes the newest item is LAST for it to end up at the top.
+		  	processNewItem( item );
+		  });
+		} catch (error) {
+			console.log('error', error, 'in rebuild');
+		}
+	});
+	
+	socket.on('newItem', function(item) {		
+		var item = strdecode(item);
+		console.log('newItem', item);
+		processNewItem( item );
+	});
+	
+	////////////////////////////////////////////////////////////////////////////
 	
 	window.newItems = 0;
 	window.itemsToShow = [];
@@ -92,15 +145,15 @@
 	  }
     }
 	
-	socket.on('newItem', function(item) {
-		var item = strdecode(item)
-
+	var processNewItem = function(item) {
 		if (item.type === "instagram") {
+			//console.log('process new item got item.data for isntagram:',item.data);
 			cleanedItem = {
 				image: item.data.images.low_resolution.url,
 				thumb: item.data.user['profile_picture'],
 				title: item.data.user.full_name,
-				comment: ""
+				comment: "",
+				time: item.data.created_time_iso
 			};
 			if (item.data && item.data.caption && typeof item.data.caption.text === "string") {
 				cleanedItem.comment = item.data.caption.text;
@@ -120,6 +173,7 @@
 	    } else if (item.type === "twitter") {
 		    //console.log("tweet!", item.data);
 		    //$("#loadingzone").append(tplImagePreloader({image:item.data.thumbnail}));
+			//console.log('new tweet...', item)
 			$("#loadingzone").append( tplTwitter(item.data) );
 			itemsToShow.push( tplTwitter(item.data) );
 			newItems += 1;
@@ -132,7 +186,7 @@
 		} else {
 			console.log("unknown item type");
 		}
-	});
+	}
 	
 	$(document).ready(function() {
 		$("#banner").on('click', function() {
@@ -161,7 +215,7 @@
 				$("#fixed").append(fixedKid);
 			}
 		}
-		newKids = null;// umm... useful?
+		newKids = null;// TODO: is this needed?
 		
 		//$(".feed").css()
 		//$("#fixed").show();
@@ -189,8 +243,6 @@
 		
 		setTimeout(function() {
 		  $("#fixed").html('');	
-		  $("#loadingzone").html('');	
-		
 		  /*
 		  var items = $("#feed li");
 		  var itemsLength = items.length;
@@ -201,7 +253,11 @@
 		    }	
 		  }
 		  */
-		}, 300);
+		}, 250);
+		
+		setTimeout(function() {
+			 $("#loadingzone").html('');
+		}, 1000);
 	}
 	</script>
 
@@ -240,8 +296,8 @@
 				
 				<li id="intromessage" class="tweet">
 					<img src="images/emerald.png" class="thumb" />
-					<h2 class="tweet-title">Hello there!</h2>
-					<a href="" class="tweet-content">We're still working out some things here... please bear with us.</a>
+					<h2 class="tweet-title">Loading...</h2>
+					<a href="" class="tweet-content">Hang on a second.</a>
 					<p class="time"></p>
 				</li>
 				
