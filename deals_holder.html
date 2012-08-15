@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Oregon Football | The Emerald</title>
+	<script type="text/javascript">
+	document.ontouchmove = function(e) {e.preventDefault()}; //Prevents scrolling
+	</script>
+
+<!-- DOUBLE TAP CODE BEGINS -->
+
+  <script type="text/javascript" src="js/zepto.min.js"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      $('body').doubleTap(function(){
+		location.reload();
+      });
+
+  	});
+
+  </script>
+<!-- DOUBLE TAP CODE ENDS -->
+
+
+</head>
+<body class="deals no-deals" ontouchstart=""> <!-- Hack to be able to use :active -->
+<div id="wrapper">
+	<div class="main">
+		<div class="deal">
+			<p class="no-deals">Sorry, we have no deals available at this time.</p>
+		</div> <!-- .deal -->
+		
+		<div class="stack one"></div>
+		<div class="stack two"></div>
+		
+	</div>
+</div> 
+</body>
+</html>

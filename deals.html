@@ -14,14 +14,55 @@
 <!-- DOUBLE TAP CODE BEGINS -->
 
   <script type="text/javascript" src="js/zepto.min.js"></script>
+  <script type="text/javascript" src="js/handlebars.min.js"></script>
+
+  <script type="text/x-handlebars-template" id="tplDeal">
+	<div class="deal">
+		<h2 class="deal-name">{{title}}</h2>
+		<p class="deal-description">{{description}}</p>
+		<img src="{{image}}" class="deal-image" />
+		<p class="deal-price">{{price}}</p>
+		<p class="deal-note">{{note}}</p>
+		<a href="" class="deal-coupon"><span>Get the Coupon</span></a>
+	</div> <!-- .deal -->
+	<div class="stack one"></div>
+	<div class="stack two"></div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="tplNoDeal">
+		<div class="deal">
+			<p class="no-deals">Sorry, we have no deals available at this time.</p>
+		</div> <!-- .deal -->
+		<div class="stack one"></div>
+		<div class="stack two"></div>
+  </script>
+
   <script type="text/javascript">
 
     $(document).ready(function() {
 
-      $('body').doubleTap(function(){
-		location.reload();
-      });
+		window.tplDeal   = Handlebars.compile($("#tplDeal").html());
+		window.tplNoDeal = Handlebars.compile($("#tplNoDeal").html());
 
+		$('body').doubleTap(function() {
+			location.reload();
+		});
+
+		$('.deal-coupon').tap(function() {
+			window.location = "showDealsModal:func(true);";
+		});
+		
+		$.ajax({
+		  url: "http://uoduckstore.com/apis/apps/DucksGameDay/deals.php?callback=?",
+		  dataType: 'script',
+		  success: function(data) {
+			if (data.active === "no") {
+				$("#main").append( tplNoDeal(data) );
+			} else {
+				$("#main").append( tplDeal(data) );				
+			}
+		  }
+		});
   	});
 
   </script>
@@ -29,15 +70,9 @@
 
 
 </head>
-<body class="deals no-deals" ontouchstart=""> <!-- Hack to be able to use :active -->
+<body class="deals coupon" ontouchstart=""> <!-- Hack to be able to use :active -->
 <div id="wrapper">
-	<div class="main">
-		<div class="deal">
-			<p class="no-deals">Sorry, we have no deals available at this time.</p>
-		</div> <!-- .deal -->
-		
-		<div class="stack one"></div>
-		<div class="stack two"></div>
+	<div id="main" class="main">
 		
 	</div>
 </div> 
