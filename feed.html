@@ -6,309 +6,105 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dev.css">
+
 	<script src="http://dev.dailyemerald.com:6767/socket.io/socket.io.js"></script>
 	<script src="js/zepto.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.min.js"></script>
-
-	<script type="text/javascript">
-	/*
-	 * JavaScript Pretty Date
-	 * Copyright (c) 2011 John Resig (ejohn.org)
-	 * Licensed under the MIT and GPL licenses.
-	 */
-	// Takes an ISO time and returns a string representing how
-	// long ago the date represents.
-	function prettyDate(time) {
-		var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," "))
-		  ,	diff = (((new Date()).getTime() - date.getTime()) / 1000)
-		  ,	day_diff = Math.floor(diff / 86400);
-
-		if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
-			return;
-
-		return day_diff == 0 && (
-				diff < 60 && "just now" ||
-				diff < 120 && "1 minute ago" ||
-				diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
-				diff < 7200 && "1 hour ago" ||
-				diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
-			day_diff == 1 && "Yesterday" ||
-			day_diff < 7 && day_diff + " days ago" ||
-			day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
-	}
-	</script>
-
-	<script type="text/javascript">
-	(function($) {
-		var interpolate = function (source, target, shift) { 
-			return (source + (target - source) * shift); 
-		};
-
-		var easing = function (pos) { 
-		    return (-Math.cos(pos * Math.PI) / 2) + .5; 
-		};
-
-		$.scroll = function(endY, duration, easingF) {
-			endY = endY || ($.os.android ? 1 : 0);
-			duration = duration || 200;
-			(typeof easingF === 'function') && (easing = easingF);
-
-			var startY = window.pageYOffset,
-				startT  = Date.now(),
-				finishT = startT + duration;
-
-			var animate = function() {
-				var now = +(new Date()),
-					shift = (now > finishT) ? 1 : (now - startT) / duration;
-
-				window.scrollTo(0, interpolate(startY, endY, easing(shift)));
-
-				(now > finishT) || setTimeout(animate, 15);
-			};
-
-			animate();
-		};
-	}(Zepto));
-	</script>
-
-	<script id="tplBanner" type="text/html">	
-	  <div class="bannerinner">{{num}} new item{{suffix}}</div>
-	</script>
-	<script id="tplImagePreloader" type="text/html">	
-	  <img src="{{{image}}}"></img>
-	</script>
-
-
-	<script id="tplTwitter" type="text/html">	
-
-	<li class="tweet justadded" style="">
-		<img src="{{{thumbnail}}}" class="thumb" />
-		<h2 class="tweet-title">{{{title}}}</h2>
-		<a href="#" class="tweet-content">{{{content}}}</a>
-		<p class="time" time="{{time}}"></p>
+	
+	<script id="tplTweet" type="text/html">
+	<li class="tweet">
+		<img src="{{thumbanil}}" class="thumb" />
+		<h2 class="tweet-title">{{title}}</h2>
+		<a href="" class="tweet-content">{{content}}</a>
+		<p class="time">{{time}}</p>
 	</li>
 	</script>
 	
 	<script id="tplInstagram" type="text/x-handlebars-template">
-	<li class="instagram justadded" style="">
+	<li class="instagram">
 		<img src="{{{image}}}" class="insta-img" />
 		<img src="{{{thumb}}}" class="thumb" />
 		<h2 class="instagram-title">{{title}}</h2>
-		<a href="#" class="instagram-comment">{{comment}}</a>
-		<p class="time" time="{{time}}"></p>
+		<a href="" class="instagram-comment">{{comment}}</a>
+		<p class="time">{{time}}</p>
 	</li>
 	</script>
 	
 	<script type="text/javascript">
 
-  	var tplInstagram = Handlebars.compile($('#tplInstagram').html());
-  	var tplTwitter   = Handlebars.compile($('#tplTwitter').html());
-  	var tplBanner   = Handlebars.compile($('#tplBanner').html());
-  	var tplImagePreloader   = Handlebars.compile($('#tplImagePreloader').html());
+  	  var tplInstagram = Handlebars.compile($('#tplInstagram').html());
+
 	
-	//////////////////////////////////////
+	/*function buildEntry(item) { // get a json object, does somt stuff, returns html ready to be inserted
+		var datestring = new Date(parseInt(item.created_time)*1000).toLocaleString();
+		var caption  = "";
+		if (item.caption && item.caption.text) {
+			caption = '"'+ item.caption.text +'"';
+		}
+		//console.log(datestring)
+		var instagramModel = {
+			src: item.images.low_resolution.url, //item.images.standard_resolution.url,
+			caption: caption,
+			datestring: datestring,
+			permalink: item.link,
+			username: item.user.full_name
+		}
+		return ich.photo(photo_data);
+	}
+	*/
+	
+	$(document).ready(function() {
+
+	});
 	
 	var socket = io.connect('http://dev.dailyemerald.com:6767');
 	
-	socket.emit('hello', {}); // this tells the server to make a new build set and send it with the 'rebuild' event below:	
-	socket.on('rebuild', function(items) { 
-		$("#fixed").html('');	
-		console.log("rebuild", items);
-		
-		console.log(typeof items, items.length, JSON.stringify(items))
- 		try {
-		  items.forEach(function(item) { //this assumes the newest item is LAST for it to end up at the top.
-		  	processNewItem( item );
-		  });
-		} catch (error) {
-			console.log('error', error, 'in rebuild');
-		}
-	});
-	
-	socket.on('newItem', function(item) {		
-		var item = strdecode(item);
-		console.log('newItem', item);
-		processNewItem( item );
-	});
-	
-	////////////////////////////////////////////////////////////////////////////
-	
-	window.newItems = 0;
-	window.itemsToShow = [];
-	window.introActive = true;
-	
 	var strdecode = function( data ) {
-	  try {
-      	return JSON.parse( decodeURIComponent( escape ( data ) ) );
-	  } catch (error) {
-		return {}	//TODO: this is bad.
-	  }
+      return JSON.parse( decodeURIComponent( escape ( data ) ) );
     }
 	
-	var processNewItem = function(item) {
-		if (item.type === "instagram") {
-			//console.log('process new item got item.data for isntagram:',item.data);
-			cleanedItem = {
-				image: item.data.images.low_resolution.url,
-				thumb: item.data.user['profile_picture'],
-				title: item.data.user.full_name,
-				comment: "",
-				time: item.data.created_time_iso
-			};
-			if (item.data && item.data.caption && typeof item.data.caption.text === "string") {
-				cleanedItem.comment = item.data.caption.text;
-			}
-			//console.log(item.data);
-		    //$("#loadingzone").append( tplImagePreloader({image: item.data.images.low_resolution.url}) );
-			$("#loadingzone").append( tplInstagram(cleanedItem) );
-			itemsToShow.push( tplInstagram(cleanedItem) );
-			newItems += 1;
-			if (newItems > 1) {
-				var suffix = "s";
-			} else {
-				var suffix = "";
-			}
-			$("#banner").html(tplBanner({num: newItems, suffix:suffix}));
-			
-	    } else if (item.type === "twitter") {
-		    //console.log("tweet!", item.data);
-		    //$("#loadingzone").append(tplImagePreloader({image:item.data.thumbnail}));
-			//console.log('new tweet...', item)
-			$("#loadingzone").append( tplTwitter(item.data) );
-			itemsToShow.push( tplTwitter(item.data) );
-			newItems += 1;
-			if (newItems > 1) {
-				var suffix = "s";
-			} else {
-				var suffix = "";
-			}
-			$("#banner").html(tplBanner({num: newItems, suffix:suffix}));
-		} else {
-			console.log("unknown item type");
-		}
-	}
-	
-	$(document).ready(function() {
-		$("#banner").on('click', function() {
-			pullToRefresh();
-		});
+	socket.on('newItem', function(item) {
+		var item = strdecode(item)
+		//var item = JSON.parse(item);
+		//$(".feed").prepend( buildTweet(item) );	
+		console.log(item.data);
+		cleanedItem = {
+			image: item.data.images.low_resolution.url,
+			thumb: item.data.user['profile_picture'],
+			title:     item.data.caption.text,
+			comment: "a comment"
+		};
+		console.log(cleanedItem);
+		$(".feed").prepend( tplInstagram(cleanedItem) );
 	});
 	
-	window.pullToRefresh = function() {
-		$("#banner").html("<div class=\"bannerinner\">Loading...</div>");
-		window.topItem = $("#feed li").first();		
+	socket.on('newInstagram', function(item) {
+		var item = JSON.parse(item);
+		$(".feed").prepend( buildInstagram(item) );	
+	});
 	
-		var newKids = $('#feed li');
-		//$("#fixed").hide(); //should already be hidden...
-		for (var i=0;i<5;i++) {
-			if (i<newKids.length) {
-				var thisKid = $(newKids[i]);
-				var thisKidHTML = thisKid.html();
-				var fixedKid = $('<li>').html( thisKidHTML );
-				fixedKid.attr('class', thisKid.attr('class'));
-				//console.log(thisKid, thisKidHTML, fixedKid);
-				fixedKid.css('top', thisKid.offset().top);
-				fixedKid.css('left', thisKid.offset().left);
-				fixedKid.css('position', 'fixed');
-				//fixedKid.css('z-index', '999');
-				fixedKid.css('-webkit-transform', 'translate3d(0,0,-10px);');
-				$("#fixed").append(fixedKid);
-			}
-		}
-		newKids = null;// TODO: is this needed?
-		
-		//$(".feed").css()
-		//$("#fixed").show();
-	
-		//console.log('offset', topItem, topItem.offset(), document.body.scrollTop );
-
-		window.topItemPrevOffset = topItem.offset().top - document.body.scrollTop;
-	
-		setTimeout(function() {
-			var bigItemString = "";
-			window.itemsToShow.forEach(function(item){
-				//$(".feed").prepend(item);
-				bigItemString = item + bigItemString; //prepend
-			});
-			itemsToShow = [];
-			newItems = 0;
-			$("#banner").html('');
-			$("#feed").prepend(bigItemString);
-			//$("img").animate({opacity: 0},100);
-		
-			window.scrollTo(0, window.topItem.offset().top - window.topItemPrevOffset);	
-			//$.scroll(topItem.offset().top - topItemPrevOffset, 100);
-		}, 200);
-		// -webkit-transform:translate3d(0, 0, 0); -webkit-backface-visibility: hidden; -webkit-perspective: 1000;
-		
-		setTimeout(function() {
-		  $("#fixed").html('');	
-		  /*
-		  var items = $("#feed li");
-		  var itemsLength = items.length;
-		  if (itemsLength > 10) {
-		    for(var i=10;i<itemsLength;i++) {
-			  $(items[i]).hide();
-			  //console.log('removed', i, items[i], 'remaining:', $("#feed li").length);
-		    }	
-		  }
-		  */
-		}, 250);
-		
-		setTimeout(function() {
-			 $("#loadingzone").html('');
-		}, 1000);
-	}
 	</script>
 
-<style type="text/css">
-#banner {
-	z-index: 5;
-	font-size: 14px;
-	height:35px;
-}
-
-.bannerinner {
-	text-align: center;
-	padding: 6px 0px;
-}
-.feed img {
-	height: 300px;
-}
-#loadingzone {
-	position:fixed;
-	left: -9999px;
-}
-#fixed {
-	z-index:50;
-	
-}
-</style>
 </head>
-
+</head>
 <body class="fan-feed">
 	
 	<div id="wrapper">
 		
 		<div class="main">
-			<div id="banner" class="tweet"></div>
-			<ul id="feed" class="feed clearfix">				
+			<ul class="feed clearfix">				
 				
-				<li id="intromessage" class="tweet">
+				<li class="tweet">
 					<img src="images/emerald.png" class="thumb" />
-					<h2 class="tweet-title">Loading...</h2>
-					<a href="" class="tweet-content">Hang on a second.</a>
+					<h2 class="tweet-title">Not so fast!</h2>
+					<a href="" class="tweet-content">During a game, tweets and Instagram photos will flow through here. But not quite yet.</a>
 					<p class="time"></p>
 				</li>
 				
 			</ul>
-			<ul id="fixed" class="feed clearfix">
-			</ul>
 		</div> <!-- .main -->	
-		
 	</div> <!-- #wrapper -->
-
-   <div id="loadingzone"></div>
 
 </body>
 </html>
