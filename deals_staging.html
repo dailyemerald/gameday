@@ -23,7 +23,7 @@
 		<img src="{{image}}" class="deal-image" />
 		<p class="deal-price">{{price}}</p>
 		<p class="deal-note">{{note}}</p>
-		<a href="" class="deal-coupon"><span>Get the Coupon</span></a>
+		<a href="" class="deal-coupon"><span>{{dealbutton}}</span></a>
 	</div> <!-- .deal -->
 	<div class="stack one"></div>
 	<div class="stack two"></div>
@@ -47,10 +47,6 @@
 		$('body').doubleTap(function() {
 			location.reload();
 		});
-
-		$('.deal-coupon').tap(function() {
-			window.location = "showDealsModal:func(true);";
-		});
 		
 		$.ajax({
 		  url: "http://uoduckstore.com/apis/apps/DucksGameDay/deals_staging.php?callback=?",
@@ -60,7 +56,12 @@
 			if (data.active === "no") {
 				$("#main").append( tplNoDeal(data) );
 			} else {
-				$("#main").append( tplDeal(data) );				
+				$("#main").append( tplDeal(data) );
+				$('.deal-coupon').tap(function(e) {
+					window.location = "showDealsModal:func(true);";
+					e.preventDefault();
+				});				
+		
 			}
 		  }
 		});

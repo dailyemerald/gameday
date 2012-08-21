@@ -451,6 +451,7 @@ body {
   line-height: 18px;
   padding: 30px 10px 12px 65px;
   width: 210px;
+  word-wrap: break-word;
 }
 .fan-feed .feed .time {
   position: absolute;
@@ -462,10 +463,10 @@ body {
 .feed li.instagram {
   padding: 0 0px;
   position: relative;
-  width: 298px;
+  width: 300px;
 }
 .fan-feed .insta-img {
-  width: 298px;
+  width: 300px;
 }
 .fan-feed .instagram .thumb {
   top: 308px;
@@ -483,6 +484,7 @@ body {
   line-height: 18px;
   padding: 32px 10px 12px 75px;
   width: 210px;
+  word-wrap: break-word;
 }
 .instagram .time {
   top: 308px;

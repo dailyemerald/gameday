@@ -42,7 +42,7 @@
 	var buildApp = function(data) {
 		var Stats = data.Stats.elements;
 		Stats.forEach(function(stat){
-			if (stat.one === "NAME") {
+			if (stat.seven === "header") {
 			  $("#stats").append( tplStatsHeader(stat) );	
 			} else { 
 			  $("#stats").append( tplStats(stat) );
