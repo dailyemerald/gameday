@@ -18,6 +18,9 @@
 .bannerinner {
 	text-align: center;
 	padding: 6px 0px;
+	background: #BBB;
+	border-radius: 5px;
+	padding: 2px;
 }
 .feed img {
 	height: 300px;
@@ -46,6 +49,12 @@
 	  <img src="{{{image}}}"></img>
 	</script>
 
+	<script id="tplFeedReadyHelper" type="text/html">
+		<img src="images/emerald.png" class="thumb" />
+		<h2 class="tweet-title">Loading...</h2>
+		<a href="" class="tweet-content">Hang on a second.</a>
+		<p class="time"></p>
+	</script>
 
 	<script id="tplTwitter" type="text/html">	
 	<li class="tweet" style="">
@@ -88,16 +97,12 @@
   	var tplBanner   = Handlebars.compile($('#tplBanner').html());
   	var tplImagePreloader   = Handlebars.compile($('#tplImagePreloader').html());
 
-	var pageLaunch = getTime()
-	var lastSighting = getTime();
+	window.pageLaunchTime = getTime();
+	window.lastServerTime = getTime();
+	window.lastUpdateTime = getTime();
+	 
 	setInterval(function() {
-		var intervalFired = getTime();
-		if (intervalFired - lastSighting > 10000) { // in iOS, if the user leaves the app, the interval stop firing. when they come back, this should fire.
-			socket.emit('resume', { "timeaway": intervalFired-lastSighting });
-			socket.emit('pull', {'recent': 50}); //server replies with 
-		}
-		lastSighting = null;
-		lastSighting = getTime();
+
 	}, 2000);
 	
 	
@@ -110,11 +115,10 @@
 	socket.emit('hello', {}); // this tells the server to make a new build set and send it with the 'rebuild' event below:		
 	socket.on('rebuild', function(items) { 
 		$("#fixed").html('');	
-		console.log("rebuild", items);
-		
+		console.log("rebuild", items.length);
  		try {
 		  items.forEach(function(item) { //this assumes the newest item is LAST for it to end up at the top.
-			console.log(item)
+			//console.log(item)
 		  	processNewItem( item );
 		  });
 		  window.pullToRefresh();
@@ -126,9 +130,9 @@
 	});
 	
 	socket.on('incremental_rebuild', function(items) {
-		console.log('incr reb:', items);
+		console.log('incr reb:', items.length);
 		items.forEach(function(item) {
-			processNewItem(item); //processNewItem will take care of dupes
+			processNewItem(item);
 		});
 	});
 	
@@ -148,14 +152,20 @@
 	window.lifetimeDupes = 0;
 	
 	var processNewItem = function(item) {
-		if (window.itemsAlreadyHere[item.time] === true) { // THIS PREVENTS MULTIPLE ITEMS IN THE SAME SECOND. MUST FIX. MAKE ID BASED.
-			window.lifetimeDupes += 1
-			socket.emit("dupeItem", {time: item.time, lifetimeDupes: window.lifetimeDupes});		
-			console.log("dupe for", item.time);
-			return false;
+		
+		if (item.d_id) {
+			if (window.itemsAlreadyHere[item.d_id] === true) { // THIS PREVENTS MULTIPLE ITEMS IN THE SAME SECOND. MUST FIX. MAKE ID BASED.
+				window.lifetimeDupes += 1
+				socket.emit("dupeItem", {d_id: item.d_id, lifetimeDupes: window.lifetimeDupes});		
+				console.log("dupe for", d_id);
+				return false;
+			} else {
+				window.itemsAlreadyHere[item.d_id] = true;
+			}
 		} else {
-			window.itemsAlreadyHere[item.time] = true;
+			console.log("man this is old.")
 		}
+		
 		
 		if (item.type === "instagram") {
 			//console.log('process new item got item.data for isntagram:',item.data);
@@ -206,6 +216,9 @@
 	});
 	
 	window.pullToRefresh = function() {
+		window.addNewItems();
+	}
+	window.addNewItems = function() {	
 		$("#banner").html("<div class=\"bannerinner\">Loading...</div>");
 		window.topItem = $("#feed li").first();		
 	
@@ -223,21 +236,14 @@
 				$("#fixed").append(fixedKid);
 			}
 		}
-		newKids = null;// TODO: is this needed?
-		
-		//$(".feed").css()
-		//$("#fixed").show();
-	
-		//console.log('offset', topItem, topItem.offset(), document.body.scrollTop );
 
+		
 		window.topItemPrevOffset = topItem.offset().top - document.body.scrollTop;
-	
-		$(".time").timeago();
 	
 		setTimeout(function() {
 			var bigItemString = "";
 			window.itemsToShow.forEach(function(item){
-				bigItemString = item + bigItemString; //prepend
+				bigItemString = bigItemString + item; 
 			});
 			itemsToShow = [];
 			newItems = 0;
@@ -247,27 +253,15 @@
 			//$("img").animate({opacity: 0},100);
 		
 			window.scrollTo(0, window.topItem.offset().top - window.topItemPrevOffset);	
-			//$.scroll(topItem.offset().top - topItemPrevOffset, 100);
-		}, 50);
-		// -webkit-transform:translate3d(0, 0, 0); -webkit-backface-visibility: hidden; -webkit-perspective: 1000;
+		}, 20);
 		
 		setTimeout(function() {
-		  $("#fixed").html('');	
-		  /*
-		  var items = $("#feed li");
-		  var itemsLength = items.length;
-		  if (itemsLength > 10) {
-		    for(var i=10;i<itemsLength;i++) {
-			  $(items[i]).hide();
-			  //console.log('removed', i, items[i], 'remaining:', $("#feed li").length);
-		    }	
-		  }
-		  */
+		  $("#fixed").html('');
 		}, 100);
 		
 		setTimeout(function() {
 			 $("#loadingzone").html('');
-		}, 1000);
+		}, 500);
 	}
 	</script>
 
