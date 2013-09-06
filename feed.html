@@ -36,7 +36,7 @@
 </style>
 </style>
 
-	<script src="http://dev.dailyemerald.com:6767/socket.io/socket.io.js"></script>
+	<script src="http://emerald-deathstar.herokuapp.com/socket.io/socket.io.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.min.js"></script>
     <script src="/v0.9/js/jquery.timeago.js"></script>
@@ -90,7 +90,7 @@
 
 	//////////////////////////////////////
 	
-	var socket = io.connect('http://dev.dailyemerald.com:6767');
+	var socket = io.connect('http://emerald-deathstar.herokuapp.com/');
 
   	var tplInstagram = Handlebars.compile($('#tplInstagram').html());
   	var tplTwitter   = Handlebars.compile($('#tplTwitter').html());
